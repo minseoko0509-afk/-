@@ -50,6 +50,8 @@ def sub(X, a, I_s, J_s, tl, wk):
 if __name__ == "__main__":
     src, T, nc, ns, seed = sys.argv[1], float(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])
     out = sys.argv[6] if len(sys.argv) > 6 else "best_lnscp.json"
+    WK = int(sys.argv[7]) if len(sys.argv) > 7 else 4
+    STL = float(sys.argv[8]) if len(sys.argv) > 8 else 30
     B = json.load(open(src)); X = set(B["X"]); a = {(i, k): j for i, k, j in B["assign"]}
     best = total(X, a); print(f"start {best:,.2f}", flush=True)
     rnd = random.Random(seed); t0 = time.time(); it = 0
@@ -62,7 +64,7 @@ if __name__ == "__main__":
         I_s = np.argsort(np.hypot(cust["x"] - cx, cust["y"] - cy))[:nc].tolist()
         J_s = set(np.argsort(np.hypot(cand["x"] - cx, cand["y"] - cy))[:ns].tolist())
         J_s |= {a[i, k] for i in I_s for k in (1, 2)}
-        r = sub(X, a, I_s, sorted(J_s), tl=30, wk=4)
+        r = sub(X, a, I_s, sorted(J_s), tl=STL, wk=WK)
         if r is None: continue
         X2, a2, stn = r; c2 = total(X2, a2)
         if c2 < best - 1e-6:
